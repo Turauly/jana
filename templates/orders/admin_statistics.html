@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Статистика</title>
+</head>
+<body>
+    <h2>📊 Жалпы статистика</h2>
+    <p><strong>Барлық тапсырыс:</strong> {{ total_orders }}</p>
+    <p><strong>Жеткізілген тапсырыс:</strong> {{ delivered_orders }}</p>
+
+    {% if top_courier %}
+        <p><strong>Ең белсенді курьер:</strong> {{ top_courier.courier__username }} ({{ top_courier.total }} тапсырыс)</p>
+    {% else %}
+        <p>Ешбір курьер жұмыс істемеген.</p>
+    {% endif %}
+
+    {% if top_shop %}
+        <p><strong>Ең көп тапсырыс алған дүкен:</strong> {{ top_shop.product__shop__name }} ({{ top_shop.total }} тапсырыс)</p>
+    {% else %}
+        <p>Ешбір дүкенде тапсырыс жоқ.</p>
+    {% endif %}
+</body>
+</html>

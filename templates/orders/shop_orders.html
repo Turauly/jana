@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Менің дүкеніме келіп түскен тапсырыстар</title>
+</head>
+<body>
+    <h2>Дүкен иесі панелі</h2>
+
+    <table border="1">
+        <tr>
+            <th>Тауар</th>
+            <th>Клиент</th>
+            <th>Мекенжай</th>
+            <th>Саны</th>
+            <th>Статус</th>
+            <th>Күні</th>
+            <th>Өңдеу</th>
+        </tr>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.product.name }}</td>
+            <td>{{ order.customer_name }}</td>
+            <td>{{ order.address }}</td>
+            <td>{{ order.quantity }}</td>
+            <td>{{ order.status }}</td>
+            <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
+            <td>
+                <form method="post" action="{% url 'update_order_status' order.id %}">
+                    {% csrf_token %}
+                    <select name="status">
+                        <option value="new" {% if order.status == 'new' %}selected{% endif %}>Жаңа</option>
+                        <option value="processing" {% if order.status == 'processing' %}selected{% endif %}>Қабылданды</option>
+                        <option value="delivering" {% if order.status == 'delivering' %}selected{% endif %}>Жолда</option>
+                        <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Жеткізілді</option>
+                    </select>
+                    <button type="submit">Сақтау</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <!-- 🔊 Дыбыс ойнату тегі -->
+    <audio id="notif-sound" src="/static/sound/new_order.mp3" preload="auto"></audio>
+
+    <!-- 🔁 5 сек сайын жаңа тапсырысты тексеру -->
+    <script>
+        function checkNewOrdersShop() {
+            fetch("{% url 'check_new_orders_shop' %}")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.new_order) {
+                        document.getElementById('notif-sound').play();
+                    }
+                });
+        }
+
+        setInterval(checkNewOrdersShop, 5000); // әр 5 сек сайын тексеру
+    </script>
+</body>
+</html>

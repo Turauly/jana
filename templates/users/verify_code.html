@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h3>📩 Растаушы кодты енгізіңіз</h3>
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="email" value="{{ email }}">
+
+        <div class="mb-3">
+            <label>Код:</label>
+            <input type="text" name="code" class="form-control" placeholder="000000" required>
+        </div>
+
+        <button type="submit" class="btn btn-success">Тексеру</button>
+    </form>
+</div>
+{% endblock %}

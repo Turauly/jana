@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Курьер панелі</title>
+</head>
+<body>
+    <h2>Курьер панелі</h2>
+
+    <!-- 🔓 Шығу батырмасы -->
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">🔓 Аккаунттан шығу</button>
+    </form>
+
+    <hr>
+
+    {% if order %}
+        <p><strong>Өнім:</strong> {{ order.product.name }}</p>
+        <p><strong>Мекенжай:</strong> {{ order.address }}</p>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="order_id" value="{{ order.id }}">
+            <button type="submit" name="mark_delivered">Жеткізілді</button>
+        </form>
+    {% else %}
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" name="go_online">На линия</button>
+        </form>
+        <p>Қазір сізде тапсырыс жоқ</p>
+    {% endif %}
+
+    <!-- 🔊 Дыбыстық хабарлама -->
+    <audio id="notif-sound" src="/static/sound/new_order.mp3" preload="auto"></audio>
+
+    <script>
+        function checkNewOrders() {
+            fetch("{% url 'check_new_orders_courier' %}")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.new_order) {
+                        document.getElementById('notif-sound').play();
+                    }
+                });
+        }
+
+        setInterval(checkNewOrders, 5000);  // әр 5 сек сайын жаңа тапсырысты тексереді
+    </script>
+</body>
+</html>

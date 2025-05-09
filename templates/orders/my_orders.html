@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Менің тапсырыстарым</title>
+</head>
+<body>
+    <h2>Менің тапсырыстарым</h2>
+    <table border="1">
+        <tr>
+            <th>Өнім</th>
+            <th>Саны</th>
+            <th>Мекенжай</th>
+            <th>Статус</th>
+            <th>Күні</th>
+        </tr>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.product.name }}</td>
+            <td>{{ order.quantity }}</td>
+            <td>{{ order.address }}</td>
+            <td>{{ order.status }}</td>
+            <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="{% url 'place_order' %}">Тапсырыс беру</a>
+</body>
+</html>

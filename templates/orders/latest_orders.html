@@ -1,0 +1,19 @@
+<h2>🕒 Соңғы тапсырыстар</h2>
+<table border="1">
+    <tr>
+        <th>Аты</th>
+        <th>Тауар</th>
+        <th>Саны</th>
+        <th>Күні</th>
+        <th>Статус</th>
+    </tr>
+    {% for order in orders %}
+    <tr>
+        <td>{{ order.customer_name }}</td>
+        <td>{{ order.product.name }}</td>
+        <td>{{ order.quantity }}</td>
+        <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
+        <td>{{ order.status }}</td>
+    </tr>
+    {% endfor %}
+</table>

@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-success text-white">
+            <h3 class="mb-0">📦 Тапсырыс беру</h3>
+        </div>
+        <div class="card-body">
+
+            <!-- 🛍 Дүкен таңдау -->
+            <form method="get" class="mb-4">
+                <label for="shopSelect"><strong>Дүкенді таңдаңыз:</strong></label>
+                <select id="shopSelect" name="shop" class="form-select" onchange="this.form.submit()">
+                    <option value="">-- Дүкенді таңдаңыз --</option>
+                    {% for shop in shops %}
+                        <option value="{{ shop.id }}" {% if selected_shop_id|default:'' == shop.id|stringformat:"s" %}selected{% endif %}>{{ shop.name }}</option>
+                    {% endfor %}
+                </select>
+            </form>
+
+            {% if form %}
+            <!-- 📝 Тапсырыс формасы -->
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        {{ form.customer_name.label_tag }} {{ form.customer_name }}
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        {{ form.phone.label_tag }} {{ form.phone }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    {{ form.address.label_tag }} {{ form.address }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.product.label_tag }} {{ form.product }}
+                </div>
+
+                <!-- 🔍 Таңдалған өнім туралы деректер -->
+                <div id="product-preview" class="mb-3" style="display: none;">
+                    <img id="preview-img" src="" alt="Өнім суреті" class="img-thumbnail mb-2" style="max-width: 200px;">
+                    <p id="preview-desc" class="text-muted small"></p>
+                    <p><strong>Бағасы:</strong> <span id="preview-price"></span> ₸</p>
+                </div>
+
+                <div class="mb-3">
+                    {{ form.quantity.label_tag }} {{ form.quantity }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form.comment.label_tag }} {{ form.comment }}
+                </div>
+
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-bag-check"></i> Жіберу
+                </button>
+            </form>
+            {% else %}
+            <p class="text-muted">Алдымен дүкенді таңдаңыз.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- 🧠 Сценарий: өнім таңдалған кезде сурет пен сипаттама көрсету -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const products = JSON.parse('{{ products_json|escapejs }}');
+        const productSelect = document.querySelector("select[name='product']");
+
+        if (productSelect) {
+            function updatePreview() {
+                const selectedId = productSelect.value;
+                const preview = document.getElementById('product-preview');
+                const img = document.getElementById('preview-img');
+                const desc = document.getElementById('preview-desc');
+                const price = document.getElementById('preview-price');
+
+                const product = products.find(p => p.pk == selectedId);
+                if (product && product.fields.image) {
+                    img.src = "/media/" + product.fields.image;
+                    desc.textContent = product.fields.description;
+                    price.textContent = product.fields.price;
+                    preview.style.display = 'block';
+                } else {
+                    preview.style.display = 'none';
+                }
+            }
+
+            productSelect.addEventListener("change", updatePreview);
+            updatePreview();  // бет ашылғанда бірден көрсету
+        }
+    });
+</script>
+{% endblock %}

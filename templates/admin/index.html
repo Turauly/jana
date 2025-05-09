@@ -1,0 +1,10 @@
+{% extends "admin/index.html" %}
+
+{% block content %}
+    <div style="margin-bottom: 20px;">
+        <a href="{% url 'admin_statistics' %}" style="padding: 8px 16px; background: #28a745; color: white; text-decoration: none; border-radius: 4px;">
+            📊 Жалпы статистика
+        </a>
+    </div>
+    {{ block.super }}
+{% endblock %}
